@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -84,7 +85,9 @@ const SidebarProvider = React.forwardRef<
         }
 
         // This sets the cookie to keep the sidebar state.
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+        if (typeof document !== 'undefined') {
+          document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+        }
       },
       [setOpenProp, open]
     )
@@ -650,10 +653,12 @@ const SidebarMenuSkeleton = React.forwardRef<
     showIcon?: boolean
   }
 >(({ className, showIcon = false, ...props }, ref) => {
-  // Random width between 50 to 90%.
-  const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`
-  }, [])
+  const [width, setWidth] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    // Calculate width only on the client side
+    setWidth(`${Math.floor(Math.random() * 40) + 50}%`);
+  }, []);
 
   return (
     <div
@@ -668,17 +673,25 @@ const SidebarMenuSkeleton = React.forwardRef<
           data-sidebar="menu-skeleton-icon"
         />
       )}
-      <Skeleton
-        className="h-4 flex-1 max-w-[--skeleton-width]"
-        data-sidebar="menu-skeleton-text"
-        style={
-          {
-            "--skeleton-width": width,
-          } as React.CSSProperties
-        }
-      />
+      {width !== null ? (
+        <Skeleton
+          className="h-4 flex-1 max-w-[--skeleton-width]"
+          data-sidebar="menu-skeleton-text"
+          style={
+            {
+              "--skeleton-width": width,
+            } as React.CSSProperties
+          }
+        />
+      ) : (
+        // Fallback or initial server-rendered state for the skeleton width
+        <Skeleton
+          className="h-4 flex-1" // No max-width initially, or a fixed one
+          data-sidebar="menu-skeleton-text"
+        />
+      )}
     </div>
-  )
+  );
 })
 SidebarMenuSkeleton.displayName = "SidebarMenuSkeleton"
 
@@ -761,3 +774,5 @@ export {
   SidebarTrigger,
   useSidebar,
 }
+
+    
