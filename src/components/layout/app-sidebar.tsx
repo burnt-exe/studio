@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 
 const navItems = [
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/", label: "API Endpoints", icon: List },
   { href: "/api-assistant", label: "API Assistant", icon: Bot },
   { href: "/access-tokens", label: "Access Tokens", icon: KeyRound },
