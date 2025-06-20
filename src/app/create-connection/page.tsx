@@ -21,7 +21,7 @@ const formSchema = z.object({
   direction: z.enum(["give", "receive"], {
     required_error: "You need to select a connection direction.",
   }),
-  method: z.enum(["sftp", "ftp"], {
+  method: z.enum(["sftp", "ftp", "smtp"], {
     required_error: "You need to select a method.",
   }),
   methodology: z.enum(["push", "pull"], {
@@ -142,6 +142,12 @@ export default function CreateConnectionPage() {
                                                             </FormControl>
                                                             <FormLabel className="font-normal">FTP</FormLabel>
                                                         </FormItem>
+                                                        <FormItem className="flex items-center space-x-3 space-y-0">
+                                                            <FormControl>
+                                                                <RadioGroupItem value="smtp" />
+                                                            </FormControl>
+                                                            <FormLabel className="font-normal">SMTP (Email)</FormLabel>
+                                                        </FormItem>
                                                     </RadioGroup>
                                                 </FormControl>
                                                 <FormMessage />
@@ -207,10 +213,11 @@ export default function CreateConnectionPage() {
                             </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="sftp-vs-ftp">
-                            <AccordionTrigger>SFTP vs. FTP</AccordionTrigger>
+                            <AccordionTrigger>SFTP vs. FTP vs. SMTP</AccordionTrigger>
                             <AccordionContent className="space-y-2 text-sm leading-relaxed">
                                 <p><span className="font-semibold">SFTP (Secure File Transfer Protocol)</span> is the recommended method as it encrypts both the authentication information and the data files being transferred, providing a high level of security.</p>
                                 <p><span className="font-semibold">FTP (File Transfer Protocol)</span> is a standard protocol for transferring files but does not provide encryption. Use this only if your endpoint does not support SFTP.</p>
+                                <p><span className="font-semibold">SMTP (Email)</span> allows you to send or receive data files as email attachments. This is useful for simple, notification-based integrations.</p>
                             </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="push-vs-pull">
