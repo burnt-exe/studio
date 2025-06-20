@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -28,13 +27,15 @@ import {
   Share2, 
   Store,
   LayoutDashboard,
-  Settings
+  Settings,
+  ArrowRightLeft
 } from 'lucide-react';
 
 const navItems = [
   { href: "/", label: "API Endpoints", icon: List },
   { href: "/api-assistant", label: "API Assistant", icon: Bot },
   { href: "/access-tokens", label: "Access Tokens", icon: KeyRound },
+  { href: "/create-connection", label: "Create Connection", icon: ArrowRightLeft },
   { type: "separator" as const },
   { href: "/contract-management", label: "Contract Management", icon: FileText },
   { href: "/marketing-management", label: "Marketing Management", icon: Megaphone },
@@ -73,7 +74,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton
                     asChild
-                    isActive={pathname === item.href || (item.href === "/" && pathname.startsWith("/api-endpoints"))} // Adjust if /api-endpoints is the actual root
+                    isActive={pathname === item.href}
                     tooltip={{ children: item.label, className: "font-body" }}
                     className="font-body"
                   >
