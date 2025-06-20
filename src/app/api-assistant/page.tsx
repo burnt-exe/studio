@@ -14,7 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { askApiDocumentation, AskApiDocumentationInput, AskApiDocumentationOutput } from '@/ai/flows/api-documentation-qa';
-import { Bot } from 'lucide-react';
+import { Bot, Copy } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   apiDocumentation: z.string().min(50, { message: "API documentation must be at least 50 characters." }),
@@ -27,6 +28,7 @@ export default function ApiAssistantPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AskApiDocumentationOutput | null>(null);
+  const { toast } = useToast();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -50,11 +52,18 @@ export default function ApiAssistantPage() {
     }
   };
 
+  const copyToClipboard = (text: string) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text)
+      .then(() => toast({ title: "Copied!", description: "Code snippet copied to clipboard." }))
+      .catch(() => toast({ variant: "destructive", title: "Failed to copy", description: "Could not copy to clipboard." }));
+  };
+
   return (
     <AppLayout>
       <PageHeader 
         title="AI-Powered API Assistant" 
-        description="Ask questions about API usage, endpoints, and parameters. Provide the API documentation text below."
+        description="Get help with APIs. Ask questions or describe what you want to do, and the AI will provide an explanation and a code snippet."
         icon={Bot}
       />
 
@@ -62,8 +71,8 @@ export default function ApiAssistantPage() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <CardHeader>
-              <CardTitle>Ask a Question</CardTitle>
-              <CardDescription>Paste your API documentation and ask a specific question about it.</CardDescription>
+              <CardTitle>Ask for Help</CardTitle>
+              <CardDescription>Paste your API documentation and ask a question or describe a task.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <FormField
@@ -80,7 +89,7 @@ export default function ApiAssistantPage() {
                       />
                     </FormControl>
                     <FormDescription>
-                      Provide the text of the API documentation you want to ask about.
+                      Provide the text of the API documentation you need help with.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -91,12 +100,12 @@ export default function ApiAssistantPage() {
                 name="question"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Your Question</FormLabel>
+                    <FormLabel>Your Question or Task</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., How do I authenticate requests for the /users endpoint?" {...field} />
+                      <Input placeholder="e.g., How do I fetch a list of users?" {...field} />
                     </FormControl>
                     <FormDescription>
-                      Ask a clear and specific question.
+                      Ask a question or describe what you want to accomplish.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -105,7 +114,7 @@ export default function ApiAssistantPage() {
             </CardContent>
             <CardFooter>
               <Button type="submit" disabled={isLoading} className="bg-primary hover:bg-primary/90">
-                {isLoading ? 'Asking AI...' : 'Ask AI Assistant'}
+                {isLoading ? 'Thinking...' : 'Ask AI Assistant'}
               </Button>
             </CardFooter>
           </form>
@@ -116,13 +125,34 @@ export default function ApiAssistantPage() {
         isLoading={isLoading}
         error={error}
         data={result ? (
-          <div className="space-y-4">
-            <h3 className="font-semibold text-lg">Answer:</h3>
-            <p className="text-foreground whitespace-pre-wrap">{result.answer}</p>
+          <div className="space-y-6">
+            <div>
+              <h3 className="font-semibold text-lg mb-2">Explanation:</h3>
+              <div className="p-4 bg-muted rounded-md text-sm leading-relaxed whitespace-pre-wrap">{result.explanation}</div>
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg mb-2">Generated Code Snippet:</h3>
+              <div className="relative">
+                <pre className="bg-muted p-4 rounded-md overflow-x-auto font-code text-sm border">
+                  <code>{result.codeSnippet}</code>
+                </pre>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-2 right-2 h-7 w-7"
+                  onClick={() => copyToClipboard(result.codeSnippet)}
+                  aria-label="Copy code snippet"
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">The AI generates code based on the documentation provided. Always review it before use.</p>
+            </div>
           </div>
         ) : null}
         title="AI Assistant's Response"
-        loadingText="Fetching answer from AI..."
+        loadingText="Generating explanation and code..."
+        noResultsText="Ask a question about your API documentation to get an explanation and a code snippet."
       />
     </AppLayout>
   );
