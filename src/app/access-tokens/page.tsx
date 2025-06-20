@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { v4 as uuidv4 } from 'uuid'; // For generating unique IDs
+import { v4 as uuidv4 } from 'uuid';
+import Link from 'next/link';
 
 import { AppLayout } from "@/components/layout/app-layout";
 import { PageHeader } from "@/components/common/page-header";
@@ -14,7 +15,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { KeyRound, Trash2, PlusCircle } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { KeyRound, Trash2, PlusCircle, HelpCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface AccessToken {
@@ -100,7 +102,7 @@ export default function AccessTokensPage() {
     <AppLayout>
       <PageHeader 
         title="Access Token Management" 
-        description="Securely store and manage your API access tokens. Tokens are stored locally in your browser."
+        description="Securely store and manage your API access tokens for use within this application. All tokens are stored securely in your browser's local storage and are never sent to any server."
         icon={KeyRound}
       />
 
@@ -146,7 +148,7 @@ export default function AccessTokensPage() {
         <CardHeader>
           <CardTitle>Stored Tokens</CardTitle>
           <CardDescription>
-            {tokens.length > 0 ? "Manage your saved access tokens below." : "No tokens stored yet. Add one using the form above."}
+            {tokens.length > 0 ? "Manage your saved access tokens below." : "No tokens stored yet. Add one using the form above to get started. See the guidance section below for examples."}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -202,6 +204,62 @@ export default function AccessTokensPage() {
           </CardFooter>
         )}
       </Card>
+      
+      <Card className="shadow-lg mt-8">
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <HelpCircle className="mr-2 h-5 w-5 text-primary"/>
+            Guidance & Examples
+          </CardTitle>
+          <CardDescription>
+            Learn more about access tokens and how to use them effectively.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="what-are-tokens">
+              <AccordionTrigger>What are Access Tokens?</AccordionTrigger>
+              <AccordionContent className="space-y-2 text-sm leading-relaxed">
+                <p>Access tokens are credentials used to authenticate with an API. They are like a key that grants this application permission to access your data on another service without you having to share your password.</p>
+                <p>You can use this page to store tokens for APIs you want to test using the <Link href="/" className="text-primary underline hover:text-primary/80">API Endpoint Index</Link>.</p>
+                <p className="font-semibold text-destructive/90">Important: Treat your access tokens like passwords. Do not share them publicly.</p>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="example-github">
+              <AccordionTrigger>Example: GitHub Personal Access Token (PAT)</AccordionTrigger>
+              <AccordionContent className="space-y-2 text-sm leading-relaxed">
+                <p>You can generate a PAT to use with the GitHub API.</p>
+                <ol className="list-decimal list-inside space-y-1 pl-2">
+                  <li>Go to your <a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">GitHub token settings</a>.</li>
+                  <li>Click "Generate new token" (select classic or fine-grained).</li>
+                  <li>Give your token a descriptive name and select the necessary scopes (e.g., `repo`, `user`).</li>
+                  <li>Click "Generate token" and copy the token value.</li>
+                  <li>Come back here, give it a name like "My GitHub Token", and paste the value.</li>
+                </ol>
+                <p className="font-mono bg-muted p-2 rounded-md text-xs mt-2">A classic GitHub token often looks like: `ghp_aBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890`</p>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="example-generic">
+              <AccordionTrigger>Example: Generic Bearer Token</AccordionTrigger>
+              <AccordionContent className="space-y-2 text-sm leading-relaxed">
+                <p>Many APIs use a "Bearer Token" for authentication. This is usually provided in the API documentation or your account settings on the service's website.</p>
+                <p>When you get your token, you can add it here. Later, when making an API call, you would typically include it in the `Authorization` header like this:</p>
+                <pre className="bg-muted p-3 rounded-md text-xs mt-2 font-code overflow-x-auto">
+                  <code>
+{`fetch('https://api.example.com/data', {
+  headers: {
+    'Authorization': 'Bearer YOUR_TOKEN_VALUE_HERE'
+  }
+});`}
+                  </code>
+                </pre>
+                <p>Our code snippet generator will handle this for you by using placeholders for tokens.</p>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </CardContent>
+      </Card>
+
     </AppLayout>
   );
 }
