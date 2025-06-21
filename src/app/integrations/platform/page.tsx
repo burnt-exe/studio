@@ -1,12 +1,24 @@
 
 "use client";
+import React, { useState, useEffect } from 'react';
+import type { LucideIcon } from 'lucide-react';
 import { AppLayout } from "@/components/layout/app-layout";
 import { PageHeader } from "@/components/common/page-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Share2, Rss, ThumbsUp, CalendarDays, MessageSquare, MessageCircle } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { Share2, Rss, ThumbsUp, CalendarDays, MessageSquare, MessageCircle, Link as LinkIcon, Unlink } from 'lucide-react';
 
-const integrations = [
+interface Integration {
+  name: string;
+  description: string;
+  icon: LucideIcon;
+  connected: boolean;
+  comingSoon: boolean;
+}
+
+const initialIntegrations: Integration[] = [
   {
     name: 'Blogger',
     description: 'Automatically publish campaign summaries and performance reports to your Blogger blog.',
@@ -32,7 +44,7 @@ const integrations = [
     name: 'Slack',
     description: 'Receive real-time notifications for new conversions, payouts, and partner sign-ups.',
     icon: MessageSquare,
-    connected: true, // Example of a connected app
+    connected: false,
     comingSoon: false,
   },
   {
@@ -51,8 +63,52 @@ const integrations = [
   }
 ];
 
+const LOCAL_STORAGE_KEY = 'impactExplorer_integrations';
 
 export default function PlatformIntegrationsPage() {
+  const [integrations, setIntegrations] = useState<Integration[]>(initialIntegrations);
+  const [isMounted, setIsMounted] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    setIsMounted(true);
+    try {
+      const storedIntegrations = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (storedIntegrations) {
+        const parsed = JSON.parse(storedIntegrations);
+        if (Array.isArray(parsed) && parsed.every(p => 'name' in p && 'connected' in p)) {
+            const mergedIntegrations = initialIntegrations.map(initial => {
+                const stored = parsed.find(s => s.name === initial.name);
+                return stored ? { ...initial, connected: stored.connected } : initial;
+            });
+            setIntegrations(mergedIntegrations);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to parse integrations from localStorage", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(integrations.map(i => ({name: i.name, connected: i.connected}))));
+    }
+  }, [integrations, isMounted]);
+
+  const handleConnect = (name: string) => {
+    setIntegrations(prev => 
+      prev.map(int => int.name === name ? { ...int, connected: true } : int)
+    );
+    toast({ title: "Connected!", description: `Successfully connected to ${name}.` });
+  };
+  
+  const handleDisconnect = (name: string) => {
+    setIntegrations(prev => 
+      prev.map(int => int.name === name ? { ...int, connected: false } : int)
+    );
+    toast({ title: "Disconnected", description: `Successfully disconnected from ${name}.` });
+  };
+
   return (
     <AppLayout>
       <PageHeader 
@@ -71,9 +127,9 @@ export default function PlatformIntegrationsPage() {
                 <CardTitle>{integration.name}</CardTitle>
                 <CardDescription>
                   {integration.comingSoon 
-                    ? <span className="text-accent">Coming Soon</span> 
+                    ? <span className="text-accent font-medium">Coming Soon</span> 
                     : integration.connected 
-                    ? <span className="text-green-600">Connected</span> 
+                    ? <span className="text-green-600 font-medium">Connected</span> 
                     : 'Available'}
                 </CardDescription>
               </div>
@@ -82,9 +138,50 @@ export default function PlatformIntegrationsPage() {
               <p className="text-sm text-muted-foreground">{integration.description}</p>
             </CardContent>
             <CardFooter>
-              <Button className="w-full" variant={integration.connected ? "outline" : "default"} disabled={integration.comingSoon}>
-                {integration.comingSoon ? 'Coming Soon' : integration.connected ? 'Manage' : 'Connect'}
-              </Button>
+                {integration.comingSoon ? (
+                     <Button className="w-full" variant="outline" disabled>Coming Soon</Button>
+                ) : integration.connected ? (
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="outline" className="w-full"><Unlink className="mr-2 h-4 w-4"/>Manage</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Manage {integration.name} Connection</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    You are currently connected to {integration.name}. You can disconnect to stop data synchronization.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  className="bg-destructive hover:bg-destructive/90"
+                                  onClick={() => handleDisconnect(integration.name)}
+                                >
+                                    Disconnect
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                ) : (
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button className="w-full"><LinkIcon className="mr-2 h-4 w-4"/>Connect</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Connect to {integration.name}?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This will authorize Impact Explorer to access your {integration.name} account. This is a simulation. In a real application, you would be redirected to an OAuth screen.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleConnect(integration.name)}>Connect</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                )}
             </CardFooter>
           </Card>
         ))}
