@@ -42,7 +42,6 @@ const navItems = [
   { href: "/contract-management", label: "Contract Management", icon: FileText },
   { href: "/marketing-management", label: "Marketing Management", icon: Megaphone },
   { href: "/report-management", label: "Report Management", icon: FilePieChart },
-  { href: "/payout-automation", label: "Payout Automation", icon: DollarSign },
   { type: "separator" as const },
   { href: "/integrations/platform", label: "Platform Integrations", icon: Share2 },
   { href: "/integrations/marketplace", label: "Marketplace Integrations", icon: Store },
