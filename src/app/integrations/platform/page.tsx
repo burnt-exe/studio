@@ -1,7 +1,7 @@
-
 "use client";
 import React, { useState, useEffect } from 'react';
 import type { LucideIcon } from 'lucide-react';
+import Link from 'next/link';
 import { AppLayout } from "@/components/layout/app-layout";
 import { PageHeader } from "@/components/common/page-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -95,13 +95,6 @@ export default function PlatformIntegrationsPage() {
     }
   }, [integrations, isMounted]);
 
-  const handleConnect = (name: string) => {
-    setIntegrations(prev => 
-      prev.map(int => int.name === name ? { ...int, connected: true } : int)
-    );
-    toast({ title: "Connected!", description: `Successfully connected to ${name}.` });
-  };
-  
   const handleDisconnect = (name: string) => {
     setIntegrations(prev => 
       prev.map(int => int.name === name ? { ...int, connected: false } : int)
@@ -164,23 +157,9 @@ export default function PlatformIntegrationsPage() {
                         </AlertDialogContent>
                     </AlertDialog>
                 ) : (
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button className="w-full"><LinkIcon className="mr-2 h-4 w-4"/>Connect</Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Connect to {integration.name}?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This will authorize Impact Explorer to access your {integration.name} account. This is a simulation. In a real application, you would be redirected to an OAuth screen.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleConnect(integration.name)}>Connect</AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                    <Link href={`/auth/mock-auth?platform=${integration.name}`} passHref>
+                      <Button className="w-full"><LinkIcon className="mr-2 h-4 w-4"/>Connect</Button>
+                    </Link>
                 )}
             </CardFooter>
           </Card>
