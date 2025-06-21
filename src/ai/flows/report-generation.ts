@@ -20,6 +20,7 @@ export type GenerateReportInput = z.infer<typeof GenerateReportInputSchema>;
 const GenerateReportOutputSchema = z.object({
   report: z.string().describe('The generated report in a suitable format (e.g., Markdown, JSON, PDF text representation).'),
   summary: z.string().describe('A brief summary of the report.'),
+  suggestedNextSteps: z.array(z.string()).describe('A list of suggested next steps or actions based on the report findings.'),
 });
 export type GenerateReportOutput = z.infer<typeof GenerateReportOutputSchema>;
 
@@ -33,11 +34,13 @@ const prompt = ai.definePrompt({
   output: {schema: GenerateReportOutputSchema},
   prompt: `You are an AI-powered report generator. Based on the requested report type and provided parameters, generate a comprehensive report and a brief summary.
 
+In addition, provide a list of 2-3 actionable next steps a user could take based on the generated report.
+
 Report Type: {{{reportType}}}
 Parameters: {{{parameters}}}
 
-Generate the report and summary.
-`, // Consider adding output format instructions here if needed
+Generate the report, summary, and suggested next steps.
+`, 
 });
 
 const generateReportFlow = ai.defineFlow(

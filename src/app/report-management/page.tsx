@@ -10,15 +10,24 @@ import { PageHeader } from "@/components/common/page-header";
 import { ResultDisplay } from "@/components/common/result-display";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { generateReport, GenerateReportInput, GenerateReportOutput } from '@/ai/flows/report-generation';
-import { FilePieChart } from 'lucide-react';
+import { FilePieChart, Lightbulb } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+const prebuiltPrompts = [
+  "Weekly sales summary",
+  "Monthly user engagement report",
+  "Top 5 performing media partners by revenue",
+  "Quarterly conversion rate analysis",
+  "Campaign performance comparison for Q1 vs Q2",
+];
+
+
 const formSchema = z.object({
-  reportType: z.string().min(3, { message: "Report type must be at least 3 characters." }),
+  reportType: z.string().min(3, { message: "Please select a report type." }),
   parameters: z.string().optional().refine(
     (val) => {
       if (!val || val.trim() === "") return true; // Optional, so empty is fine
@@ -73,7 +82,7 @@ export default function ReportManagementPage() {
     <AppLayout>
       <PageHeader 
         title="AI Report Management" 
-        description="Generate various types of reports automatically using AI. Specify the report type and any relevant parameters."
+        description="Generate various types of reports automatically using AI. Select a pre-built prompt or specify your own."
         icon={FilePieChart}
       />
 
@@ -82,7 +91,7 @@ export default function ReportManagementPage() {
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <CardHeader>
               <CardTitle>Generate Report</CardTitle>
-              <CardDescription>Define the report type and parameters for AI generation.</CardDescription>
+              <CardDescription>Select a pre-built report, then add any optional parameters.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <FormField
@@ -91,10 +100,19 @@ export default function ReportManagementPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Report Type</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Weekly Sales Summary, Monthly User Engagement" {...field} />
-                    </FormControl>
-                    <FormDescription>Specify the kind of report you need.</FormDescription>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a pre-built report type..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {prebuiltPrompts.map(prompt => (
+                          <SelectItem key={prompt} value={prompt}>{prompt}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>Choose a report from the list to get started.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -140,6 +158,21 @@ export default function ReportManagementPage() {
               <h3 className="font-semibold text-lg mb-2">Summary:</h3>
               <p className="p-4 bg-muted rounded-md text-sm leading-relaxed">{result.summary}</p>
             </div>
+            {result.suggestedNextSteps && result.suggestedNextSteps.length > 0 && (
+              <div>
+                <h3 className="font-semibold text-lg mb-2 flex items-center">
+                  <Lightbulb className="mr-2 h-5 w-5 text-accent" />
+                  Suggested Next Steps:
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {result.suggestedNextSteps.map((step, index) => (
+                    <Button key={index} variant="outline" size="sm" className="cursor-default">
+                      {step}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ) : null}
         title="AI-Generated Report"
