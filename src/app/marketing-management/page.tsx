@@ -1,44 +1,77 @@
 
 "use client";
 import React, { useState, useEffect } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import Link from 'next/link';
 
 import { AppLayout } from "@/components/layout/app-layout";
 import { PageHeader } from "@/components/common/page-header";
-import { ResultDisplay } from "@/components/common/result-display";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { analyzeMarketingCampaign, AnalyzeMarketingCampaignInput, AnalyzeMarketingCampaignOutput } from '@/ai/flows/marketing-campaign-analyzer';
-import { Megaphone, Rss, Link as LinkIcon } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Send, Rss, ThumbsUp, Mail, Link as LinkIcon, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import Image from 'next/image';
 
-const formSchema = z.object({
-  campaignData: z.string().min(50, { message: "Campaign data must be at least 50 characters." })
-    .max(5000, { message: "Campaign data must not exceed 5000 characters." }),
-});
-
-type FormData = z.infer<typeof formSchema>;
 const LOCAL_STORAGE_KEY = 'impactExplorer_integrations';
 
-export default function MarketingManagementPage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<AnalyzeMarketingCampaignOutput | null>(null);
+interface Contract {
+  id: string;
+  name: string;
+}
+
+interface ContractContent {
+  title: string;
+  description: string;
+  imageUrl: string;
+  imageHint: string;
+  affiliateLink: string;
+}
+
+const contracts: Contract[] = [
+  { id: 'sage', name: 'Sage' },
+  { id: 'nike', name: 'Nike' },
+  { id: 'adobe', name: 'Adobe Creative Cloud' },
+];
+
+const contentData: Record<string, ContractContent> = {
+  sage: {
+    title: "Streamline Your Business with Sage Accounting",
+    description: "Get 50% off your first 6 months of Sage Accounting. Effortlessly manage invoices, track expenses, and handle taxes with the #1 cloud accounting software for small businesses.",
+    imageUrl: "https://placehold.co/600x400.png",
+    imageHint: "office accounting",
+    affiliateLink: "https://impact.com/promo/sage-q3-2024",
+  },
+  nike: {
+    title: "Nike Air Max Dn: The Next Generation of Air",
+    description: "Feel the unreal. The new Nike Air Max Dn features our Dynamic Air unit system, bringing you a revolutionary feel with every step. Shop the latest collection now.",
+    imageUrl: "https://placehold.co/600x400.png",
+    imageHint: "running shoes",
+    affiliateLink: "https://impact.com/promo/nike-airmax-dn",
+  },
+  adobe: {
+    title: "Unleash Your Creativity with Adobe Creative Cloud",
+    description: "Get access to Photoshop, Illustrator, Premiere Pro, and more with the Adobe Creative Cloud All Apps plan. Start creating today with a 7-day free trial.",
+    imageUrl: "https://placehold.co/600x400.png",
+    imageHint: "digital art",
+    affiliateLink: "https://impact.com/promo/adobe-cc-all-apps",
+  },
+};
+
+const WhatsAppIcon = () => (
+    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 fill-current">
+      <title>WhatsApp</title>
+      <path d="M12.04 2.016c-5.48 0-9.91 4.43-9.91 9.91 0 1.75.46 3.42 1.29 4.89L2 22l5.26-1.38c1.41.8 3.01 1.25 4.71 1.25h.01c5.48 0 9.91-4.43 9.91-9.91s-4.43-9.91-9.91-9.91zM18.1 16.39c-.21-.11-.76-.38-1.04-.51s-.33-.2-.46.2c-.13.4-.42.92-.51 1.1-.1.18-.18.2-.33.1s-.63-.23-1.2-.47c-1.12-.48-1.85-1.08-2.17-1.87-.16-.41.13-.62.28-.78.13-.13.28-.34.42-.51s.18-.28.28-.46c.1-.18.05-.33-.03-.46-.08-.13-.76-1.82-.9-2.2-.14-.38-.28-.33-.38-.33s-.23-.03-.36-.03c-.13 0-.33.05-.51.23-.18.18-.7.68-.7 1.65s.73 1.92.83 2.05c.1.13 1.4 2.13 3.38 2.98.48.2.85.33 1.14.43.48.18.9.15 1.25.1.38-.05 1.18-.48 1.34-1.04.16-.56.16-1.04.11-1.13s-.18-.16-.38-.28z"/>
+    </svg>
+);
+
+
+export default function ContentSyndicationPage() {
+  const [selectedContract, setSelectedContract] = useState<Contract | null>(null);
+  const [content, setContent] = useState<ContractContent | null>(null);
   const [isBloggerConnected, setIsBloggerConnected] = useState(false);
+  const [isMetaConnected, setIsMetaConnected] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { toast } = useToast();
-
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      campaignData: "",
-    },
-  });
 
   useEffect(() => {
     setIsMounted(true);
@@ -46,140 +79,150 @@ export default function MarketingManagementPage() {
       const storedIntegrations = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (storedIntegrations) {
         const parsed = JSON.parse(storedIntegrations);
-        const bloggerIntegration = parsed.find((i: any) => i.name === 'Blogger');
-        if (bloggerIntegration && bloggerIntegration.connected) {
-          setIsBloggerConnected(true);
-        }
+        const blogger = parsed.find((i: any) => i.name === 'Blogger');
+        const meta = parsed.find((i: any) => i.name === 'Meta');
+        if (blogger?.connected) setIsBloggerConnected(true);
+        if (meta?.connected) setIsMetaConnected(true);
       }
     } catch (e) {
       console.error("Failed to parse integrations from localStorage", e);
     }
   }, []);
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
-    setIsLoading(true);
-    setError(null);
-    setResult(null);
-    try {
-      const response = await analyzeMarketingCampaign(data);
-      setResult(response);
-      toast({ title: "Campaign Analyzed", description: "The marketing campaign data has been successfully analyzed." });
-    } catch (e: any) {
-      setError(e.message || "Failed to analyze marketing campaign.");
-      toast({ variant: "destructive", title: "Error", description: e.message || "Failed to analyze marketing campaign." });
-    } finally {
-      setIsLoading(false);
-    }
+  const handleContractChange = (contractId: string) => {
+    const contract = contracts.find(c => c.id === contractId) || null;
+    setSelectedContract(contract);
+    setContent(contentData[contractId] || null);
   };
 
-  const handlePostToBlogger = () => {
-    if (!result) return;
-    // In a real app, this would make an API call to post to Blogger.
-    console.log("Simulating post to Blogger:", {
-      title: "Marketing Campaign Analysis",
-      content: `Summary: ${result.summary}\n\nInsights:\n${result.insights.join('\n- ')}\n\nRecommendations:\n${result.recommendations.join('\n- ')}`
-    });
+  const handleShare = (platform: string) => {
+    if (!content) return;
     toast({
-      title: "Posted to Blogger!",
-      description: "Your marketing analysis has been successfully posted.",
+      title: `Shared to ${platform}!`,
+      description: `Your content "${content.title}" has been posted.`,
     });
+  };
+
+  const handleShareByEmail = () => {
+    if (!content) return;
+    const subject = `Check this out: ${content.title}`;
+    const body = `${content.description}\n\nFind out more here: ${content.affiliateLink}`;
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+  
+  const handleShareByWhatsApp = () => {
+    if (!content) return;
+    const text = `${content.title}\n\n${content.description}\n\n${content.affiliateLink}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+      .then(() => toast({ title: "Link Copied!", description: "Affiliate link copied to clipboard." }))
+      .catch(() => toast({ variant: "destructive", title: "Failed to copy", description: "Could not copy link." }));
   };
 
   return (
     <AppLayout>
       <PageHeader 
-        title="AI Marketing Management" 
-        description="Input your marketing campaign data (e.g., media performance, post engagement, ad spend) to get AI-driven analysis, insights, and recommendations."
-        icon={Megaphone}
+        title="Content Syndication" 
+        description="Select a contract to access its promotional content and share it across your platforms."
+        icon={Send}
       />
 
-      <Card className="shadow-lg">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardHeader>
-              <CardTitle>Analyze Marketing Campaign</CardTitle>
-              <CardDescription>Provide data related to your marketing campaign for AI analysis.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <FormField
-                control={form.control}
-                name="campaignData"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Campaign Data</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Paste your campaign data here (e.g., KPIs, ad copy, target audience, results, spend, etc.)..."
-                        className="min-h-[250px] resize-y"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-            <CardFooter>
-              <Button type="submit" disabled={isLoading} className="bg-primary hover:bg-primary/90">
-                {isLoading ? 'Analyzing...' : 'Analyze Campaign'}
-              </Button>
-            </CardFooter>
-          </form>
-        </Form>
-      </Card>
-      
-      <ResultDisplay
-        isLoading={isLoading}
-        error={error}
-        data={result ? (
-          <div className="space-y-6">
-            <div>
-              <h3 className="font-semibold text-lg mb-2">Summary:</h3>
-              <p className="p-4 bg-muted rounded-md text-sm leading-relaxed">{result.summary}</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg mb-2">Key Insights:</h3>
-              <ul className="list-disc list-inside space-y-1 p-4 bg-muted rounded-md text-sm">
-                {result.insights.map((insight, index) => <li key={index}>{insight}</li>)}
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg mb-2">Recommendations:</h3>
-              <ul className="list-disc list-inside space-y-1 p-4 bg-muted rounded-md text-sm">
-                {result.recommendations.map((rec, index) => <li key={index}>{rec}</li>)}
-              </ul>
-            </div>
-            {isMounted && (
-              <Card className="mt-4 border-primary/50">
+      <div className="grid gap-8 md:grid-cols-2">
+        <div className="space-y-6">
+            <Card className="shadow-lg">
                 <CardHeader>
-                  <CardTitle className="flex items-center text-lg">
-                    <Rss className="mr-2 h-5 w-5 text-primary"/>
-                    Publish to Platform
-                  </CardTitle>
+                <CardTitle>Select a Contract</CardTitle>
+                <CardDescription>Choose a media partner contract to view available content.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {isBloggerConnected ? (
-                      <p className="text-sm text-muted-foreground">Your Blogger account is connected. You can post this analysis directly to your blog.</p>
-                  ) : (
-                      <p className="text-sm text-muted-foreground">Connect your Blogger account to post this analysis directly to your blog.</p>
-                  )}
+                    <Select onValueChange={handleContractChange}>
+                        <SelectTrigger>
+                        <SelectValue placeholder="Choose a contract..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                        {contracts.map(contract => (
+                            <SelectItem key={contract.id} value={contract.id}>{contract.name}</SelectItem>
+                        ))}
+                        </SelectContent>
+                    </Select>
                 </CardContent>
-                <CardFooter>
-                  {isBloggerConnected ? (
-                      <Button onClick={handlePostToBlogger}><Rss className="mr-2 h-4 w-4"/> Post to Blogger</Button>
-                  ) : (
-                      <Button asChild variant="outline">
-                        <Link href="/integrations/platform"><LinkIcon className="mr-2 h-4 w-4"/> Connect Blogger</Link>
-                      </Button>
-                  )}
-                </CardFooter>
-              </Card>
+            </Card>
+
+            {content && isMounted && (
+                <Card className="shadow-lg">
+                    <CardHeader>
+                    <CardTitle>Share Content</CardTitle>
+                    <CardDescription>Publish this content to your connected platforms.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-2 gap-4">
+                        <Button onClick={handleShareByEmail} variant="outline" className="w-full justify-start"><Mail className="mr-2 h-4 w-4"/> Email</Button>
+                        <Button onClick={handleShareByWhatsApp} variant="outline" className="w-full justify-start"><WhatsAppIcon /> WhatsApp</Button>
+                        {isBloggerConnected ? (
+                             <Button onClick={() => handleShare('Blogger')} variant="outline" className="w-full justify-start"><Rss className="mr-2 h-4 w-4"/> Post to Blogger</Button>
+                        ) : (
+                            <Button asChild variant="outline" className="w-full justify-start" disabled><Rss className="mr-2 h-4 w-4"/> Post to Blogger</Button>
+                        )}
+                        {isMetaConnected ? (
+                             <Button onClick={() => handleShare('Meta')} variant="outline" className="w-full justify-start"><ThumbsUp className="mr-2 h-4 w-4"/> Post to Meta</Button>
+                        ) : (
+                            <Button asChild variant="outline" className="w-full justify-start" disabled><ThumbsUp className="mr-2 h-4 w-4"/> Post to Meta</Button>
+                        )}
+                    </CardContent>
+                    <CardFooter>
+                         <p className="text-xs text-muted-foreground">
+                            Enable more platforms in the <Link href="/integrations/platform" className="text-primary underline">Platform Integrations</Link> page.
+                        </p>
+                    </CardFooter>
+                </Card>
             )}
-          </div>
-        ) : null}
-        title="AI Marketing Analysis"
-        loadingText="AI is analyzing your campaign data..."
-      />
+        </div>
+        
+        <div className="space-y-6">
+            {content ? (
+                <Card className="shadow-lg">
+                    <CardHeader>
+                        <CardTitle>{content.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="overflow-hidden rounded-lg border">
+                            <Image
+                                src={content.imageUrl}
+                                alt={content.title}
+                                width={600}
+                                height={400}
+                                data-ai-hint={content.imageHint}
+                                className="object-cover w-full"
+                            />
+                        </div>
+                        <p className="text-muted-foreground text-sm leading-relaxed">{content.description}</p>
+                        
+                        <div className="space-y-2">
+                           <label className="text-sm font-medium">Affiliate Link</label>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="text"
+                                    readOnly
+                                    value={content.affiliateLink}
+                                    className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                />
+                                <Button variant="outline" size="icon" onClick={() => copyToClipboard(content.affiliateLink)}><Copy className="h-4 w-4" /></Button>
+                            </div>
+                        </div>
+
+                    </CardContent>
+                </Card>
+            ) : (
+                <Card className="shadow-lg h-full flex items-center justify-center">
+                    <CardContent className="text-center text-muted-foreground p-6">
+                        <p>Select a contract to see its content here.</p>
+                    </CardContent>
+                </Card>
+            )}
+        </div>
+      </div>
     </AppLayout>
   );
 }
