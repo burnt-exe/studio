@@ -8,9 +8,11 @@ import { PageHeader } from "@/components/common/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, Rss, ThumbsUp, Mail, Link as LinkIcon, Copy } from 'lucide-react';
+import { Send, Rss, ThumbsUp, Mail, Link as LinkIcon, Copy, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
+import { Skeleton } from '@/components/ui/skeleton';
+
 
 const LOCAL_STORAGE_KEY = 'impactExplorer_integrations';
 
@@ -122,6 +124,38 @@ export default function ContentSyndicationPage() {
       .catch(() => toast({ variant: "destructive", title: "Failed to copy", description: "Could not copy link." }));
   };
 
+  if (!isMounted) {
+    return (
+      <AppLayout>
+        <PageHeader 
+          title="Content Syndication" 
+          description="Select a contract to access its promotional content and share it across your platforms."
+          icon={Send}
+        />
+        <div className="grid gap-8 md:grid-cols-2">
+          <div className="space-y-6">
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle>Select a Contract</CardTitle>
+                <CardDescription>Choose a media partner contract to view available content.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-10 w-full" />
+              </CardContent>
+            </Card>
+          </div>
+          <div className="space-y-6">
+            <Card className="shadow-lg h-full flex items-center justify-center">
+              <CardContent className="text-center text-muted-foreground p-6">
+                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
+
   return (
     <AppLayout>
       <PageHeader 
@@ -151,7 +185,7 @@ export default function ContentSyndicationPage() {
                 </CardContent>
             </Card>
 
-            {content && isMounted && (
+            {content && (
                 <Card className="shadow-lg">
                     <CardHeader>
                     <CardTitle>Share Content</CardTitle>
