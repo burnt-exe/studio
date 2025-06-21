@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Share2, Rss, ThumbsUp, CalendarDays, MessageSquare, MessageCircle, Link as LinkIcon, Unlink } from 'lucide-react';
+import { Share2, Rss, ThumbsUp, CalendarDays, MessageSquare, MessageCircle, Link as LinkIcon, Unlink, Store, AppWindow } from 'lucide-react';
 
 interface Integration {
   name: string;
@@ -32,6 +32,20 @@ const initialIntegrations: Integration[] = [
     icon: ThumbsUp,
     connected: false,
     comingSoon: false,
+  },
+  {
+    name: 'Shopify',
+    description: 'Sync product catalogs and track sales conversions from your Shopify store.',
+    icon: Store,
+    connected: false,
+    comingSoon: false,
+  },
+  {
+    name: 'FirebaseStudio',
+    description: 'Deploy and manage your Impact Explorer integrations directly within Firebase Studio.',
+    icon: AppWindow,
+    connected: false,
+    comingSoon: true,
   },
   {
     name: 'Google Calendar',
