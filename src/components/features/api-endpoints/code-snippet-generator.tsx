@@ -58,7 +58,6 @@ export function CodeSnippetGenerator({ selectedEndpoint }: CodeSnippetGeneratorP
       method: selectedEndpoint.method,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer YOUR_ACCESS_TOKEN', // Placeholder
       },
     };
 
@@ -88,21 +87,26 @@ export function CodeSnippetGenerator({ selectedEndpoint }: CodeSnippetGeneratorP
 
 
     const snippet = `
-async function callApi() {
-  const url = 'https://your-api-domain.com${path}'; // Replace with your actual API domain
+async function callImpactApi() {
+  const accountSid = 'YOUR_ACCOUNT_SID'; // Replace with your Account SID
+  const authToken = 'YOUR_AUTH_TOKEN'; // Replace with your Auth Token
+  const encodedCredentials = btoa(\`\${accountSid}:\${authToken}\`);
+
+  const url = \`https://api.impact.com${path}\`;
   ${bodySnippet}
   const options = {
     method: '${selectedEndpoint.method}',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer YOUR_ACCESS_TOKEN' // Replace with your actual token
+      'Authorization': \`Basic \${encodedCredentials}\`
     }${options.body ? `,\n    body: JSON.stringify(body)` : ''}
   };
 
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
-      throw new Error(\`HTTP error! status: \${response.status}\`);
+      const errorData = await response.json();
+      throw new Error(\`HTTP error! status: \${response.status} - \${JSON.stringify(errorData)}\`);
     }
     const data = await response.json();
     console.log('API Response:', data);
@@ -113,7 +117,7 @@ async function callApi() {
   }
 }
 
-callApi();
+callImpactApi();
 `;
     setGeneratedSnippet(snippet.trim());
   };
@@ -233,7 +237,7 @@ callApi();
                 <Copy className="h-4 w-4" />
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">Remember to replace placeholders like <code>YOUR_ACCESS_TOKEN</code> and <code>https://your-api-domain.com</code> with actual values.</p>
+            <p className="text-xs text-muted-foreground">Remember to replace <code>YOUR_ACCOUNT_SID</code> and <code>YOUR_AUTH_TOKEN</code> with your actual Impact.com credentials.</p>
           </div>
         )}
       </CardContent>
