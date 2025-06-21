@@ -18,12 +18,10 @@ import {
 import { cn } from '@/lib/utils';
 import { 
   List, 
-  Code2, 
   Bot, 
   KeyRound, 
   FileText, 
   Megaphone, 
-  DollarSign, 
   FilePieChart, 
   Share2, 
   Store,

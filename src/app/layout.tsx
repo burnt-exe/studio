@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: 'Impact Explorer',
-  description: 'Explore APIs and manage digital assets with AI-powered tools.',
+  description: 'Your skunkworks lab for bridging impact.com data with your digital audiences.',
 };
 
 export default function RootLayout({
