@@ -4,7 +4,7 @@ import { AppLayout } from "@/components/layout/app-layout";
 import { PageHeader } from "@/components/common/page-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Share2, Rss, Facebook, CalendarDays, MessageSquare, Reddit } from 'lucide-react';
+import { Share2, Rss, ThumbsUp, CalendarDays, MessageSquare, MessageCircle } from 'lucide-react';
 
 const integrations = [
   {
@@ -17,7 +17,7 @@ const integrations = [
   {
     name: 'Meta',
     description: 'Sync audiences and post campaign updates to Facebook Pages or Instagram accounts.',
-    icon: Facebook,
+    icon: ThumbsUp,
     connected: false,
     comingSoon: false,
   },
@@ -38,7 +38,7 @@ const integrations = [
   {
     name: 'Reddit',
     description: 'Monitor subreddits for brand mentions and post to relevant communities.',
-    icon: Reddit,
+    icon: MessageCircle,
     connected: false,
     comingSoon: true,
   },
@@ -92,4 +92,3 @@ export default function PlatformIntegrationsPage() {
     </AppLayout>
   );
 }
-
