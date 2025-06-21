@@ -25,9 +25,32 @@ const prebuiltPrompts = [
   "Campaign performance comparison for Q1 vs Q2",
 ];
 
+const mockReportData = JSON.stringify(
+  [
+    { "date": "2023-10-01", "partnerId": "partner-123", "clicks": 1500, "conversions": 75, "revenue": 1875.00 },
+    { "date": "2023-10-01", "partnerId": "partner-456", "clicks": 800, "conversions": 60, "revenue": 1200.00 },
+    { "date": "2023-10-02", "partnerId": "partner-123", "clicks": 1650, "conversions": 80, "revenue": 2000.00 },
+    { "date": "2023-10-02", "partnerId": "partner-789", "clicks": 2200, "conversions": 110, "revenue": 3300.00 },
+    { "date": "2023-10-03", "partnerId": "partner-456", "clicks": 950, "conversions": 70, "revenue": 1400.00 }
+  ],
+  null,
+  2
+);
+
 
 const formSchema = z.object({
   reportType: z.string().min(3, { message: "Please select a report type." }),
+  reportData: z.string().min(1, "Please provide data for the report.").refine(
+    (val) => {
+      try {
+        JSON.parse(val);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    },
+    { message: "Data must be a valid JSON object." }
+  ),
   parameters: z.string().optional().refine(
     (val) => {
       if (!val || val.trim() === "") return true; // Optional, so empty is fine
@@ -54,6 +77,7 @@ export default function ReportManagementPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       reportType: "",
+      reportData: mockReportData,
       parameters: "",
     },
   });
@@ -65,6 +89,7 @@ export default function ReportManagementPage() {
     try {
       const input: GenerateReportInput = {
         reportType: data.reportType,
+        reportData: data.reportData,
         parameters: data.parameters ? JSON.parse(data.parameters) : undefined,
       };
       const response = await generateReport(input);
@@ -82,7 +107,7 @@ export default function ReportManagementPage() {
     <AppLayout>
       <PageHeader 
         title="AI Report Management" 
-        description="Generate various types of reports automatically using AI. Select a pre-built prompt or specify your own."
+        description="Generate various types of reports automatically using AI. Select a report type, provide data, and get insights."
         icon={FilePieChart}
       />
 
@@ -91,7 +116,7 @@ export default function ReportManagementPage() {
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <CardHeader>
               <CardTitle>Generate Report</CardTitle>
-              <CardDescription>Select a pre-built report, then add any optional parameters.</CardDescription>
+              <CardDescription>Select a report type, provide your data, and add any optional parameters.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <FormField
@@ -117,12 +142,30 @@ export default function ReportManagementPage() {
                   </FormItem>
                 )}
               />
+               <FormField
+                control={form.control}
+                name="reportData"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Your Data (JSON format)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder={'Paste your organization or user data here...'}
+                        className="min-h-[200px] resize-y font-code"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>Provide the real-time data for the report. Mock data is pre-filled as an example.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="parameters"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Parameters (JSON format, optional)</FormLabel>
+                    <FormLabel>Additional Parameters (JSON format, optional)</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder={'e.g., { "region": "North America", "product_category": "Electronics" }'}
@@ -130,7 +173,7 @@ export default function ReportManagementPage() {
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>Provide additional parameters as a JSON object if needed by the report type.</FormDescription>
+                    <FormDescription>Provide additional context or filters as a JSON object if needed.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

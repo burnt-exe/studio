@@ -13,6 +13,7 @@ import {z} from 'genkit';
 
 const GenerateReportInputSchema = z.object({
   reportType: z.string().describe('The type of report to generate (e.g., weekly sales, monthly marketing).'),
+  reportData: z.string().describe('The raw data for the report, provided as a JSON string.'),
   parameters: z.record(z.any()).optional().describe('Additional parameters for the report, specific to the report type.'),
 });
 export type GenerateReportInput = z.infer<typeof GenerateReportInputSchema>;
@@ -32,12 +33,18 @@ const prompt = ai.definePrompt({
   name: 'generateReportPrompt',
   input: {schema: GenerateReportInputSchema},
   output: {schema: GenerateReportOutputSchema},
-  prompt: `You are an AI-powered report generator. Based on the requested report type and provided parameters, generate a comprehensive report and a brief summary.
+  prompt: `You are an AI-powered report generator. Based on the requested report type, provided data, and any additional parameters, generate a comprehensive report and a brief summary.
+
+You must use the provided real-time data as the primary source for your report generation.
 
 In addition, provide a list of 2-3 actionable next steps a user could take based on the generated report.
 
 Report Type: {{{reportType}}}
 Parameters: {{{parameters}}}
+Data:
+\`\`\`json
+{{{reportData}}}
+\`\`\`
 
 Generate the report, summary, and suggested next steps.
 `, 
