@@ -27,7 +27,8 @@ import {
   Store,
   LayoutDashboard,
   Settings,
-  ArrowRightLeft
+  ArrowRightLeft,
+  PenSquare
 } from 'lucide-react';
 
 const navItems = [
@@ -39,6 +40,7 @@ const navItems = [
   { type: "separator" as const },
   { href: "/contract-management", label: "Contract Management", icon: FileText },
   { href: "/marketing-management", label: "Content Syndication", icon: Send },
+  { href: "/create-content", label: "Create Content", icon: PenSquare },
   { href: "/report-management", label: "Report Management", icon: FilePieChart },
   { type: "separator" as const },
   { href: "/integrations/platform", label: "Platform Integrations", icon: Share2 },
