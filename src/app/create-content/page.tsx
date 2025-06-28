@@ -13,7 +13,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { generateBrandedContent, GenerateBrandedContentInput, GenerateBrandedContentOutput } from '@/ai/flows/content-generation';
-import { PenSquare, Rss, ThumbsUp, Mail, Linkedin, X, Reddit } from 'lucide-react';
+import { PenSquare, Rss, ThumbsUp, Mail, Linkedin, X as XIcon, Reddit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const brandVoiceOptions = [
@@ -270,9 +270,9 @@ export default function CreateContentPage() {
                         <Button variant="outline" className="w-full justify-start" disabled><Linkedin className="mr-2 h-4 w-4"/> Post to LinkedIn</Button>
                     )}
                     {isXConnected ? (
-                        <Button onClick={() => handleShare('X')} variant="outline" className="w-full justify-start"><X className="mr-2 h-4 w-4"/> Post to X</Button>
+                        <Button onClick={() => handleShare('X')} variant="outline" className="w-full justify-start"><XIcon className="mr-2 h-4 w-4"/> Post to X</Button>
                     ) : (
-                        <Button variant="outline" className="w-full justify-start" disabled><X className="mr-2 h-4 w-4"/> Post to X</Button>
+                        <Button variant="outline" className="w-full justify-start" disabled><XIcon className="mr-2 h-4 w-4"/> Post to X</Button>
                     )}
                     {isRedditConnected ? (
                         <Button onClick={() => handleShare('Reddit')} variant="outline" className="w-full justify-start"><Reddit className="mr-2 h-4 w-4"/> Post to Reddit</Button>

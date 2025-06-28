@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Share2, Rss, ThumbsUp, CalendarDays, MessageSquare, Link as LinkIcon, Unlink, Store, AppWindow, Linkedin, X, Reddit } from 'lucide-react';
+import { Share2, Rss, ThumbsUp, CalendarDays, MessageSquare, Link as LinkIcon, Unlink, Store, AppWindow, Linkedin, X as XIcon, Reddit } from 'lucide-react';
 
 interface Integration {
   name: string;
@@ -43,7 +43,7 @@ const initialIntegrations: Integration[] = [
   {
     name: 'X',
     description: 'Post short updates, news, and links to your followers on X (formerly Twitter).',
-    icon: X,
+    icon: XIcon,
     connected: false,
     comingSoon: false,
   },

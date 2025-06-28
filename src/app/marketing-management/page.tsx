@@ -8,7 +8,7 @@ import { PageHeader } from "@/components/common/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, Rss, ThumbsUp, Mail, Link as LinkIcon, Copy, Loader2, Linkedin, X, Reddit } from 'lucide-react';
+import { Send, Rss, ThumbsUp, Mail, Link as LinkIcon, Copy, Loader2, Linkedin, X as XIcon, Reddit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -228,9 +228,9 @@ export default function ContentSyndicationPage() {
                             <Button variant="outline" className="w-full justify-start" disabled><Linkedin className="mr-2 h-4 w-4"/> Post to LinkedIn</Button>
                         )}
                         {isXConnected ? (
-                              <Button onClick={() => handleShare('X')} variant="outline" className="w-full justify-start"><X className="mr-2 h-4 w-4"/> Post to X</Button>
+                              <Button onClick={() => handleShare('X')} variant="outline" className="w-full justify-start"><XIcon className="mr-2 h-4 w-4"/> Post to X</Button>
                         ) : (
-                            <Button variant="outline" className="w-full justify-start" disabled><X className="mr-2 h-4 w-4"/> Post to X</Button>
+                            <Button variant="outline" className="w-full justify-start" disabled><XIcon className="mr-2 h-4 w-4"/> Post to X</Button>
                         )}
                         {isRedditConnected ? (
                               <Button onClick={() => handleShare('Reddit')} variant="outline" className="w-full justify-start"><Reddit className="mr-2 h-4 w-4"/> Post to Reddit</Button>
