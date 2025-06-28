@@ -12,6 +12,7 @@ import { Send, Rss, ThumbsUp, Mail, Link as LinkIcon, Copy, Loader2, Linkedin, X
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
+import { WhatsAppIcon } from '@/components/common/whatsapp-icon';
 
 
 const LOCAL_STORAGE_KEY = 'impactExplorer_integrations';
@@ -66,14 +67,6 @@ const contentData: Record<string, ContractContent> = {
     affiliateLink: "https://impact.com/promo/content-spark-ai",
   },
 };
-
-const WhatsAppIcon = () => (
-    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 fill-current">
-      <title>WhatsApp</title>
-      <path d="M12.04 2.016c-5.48 0-9.91 4.43-9.91 9.91 0 1.75.46 3.42 1.29 4.89L2 22l5.26-1.38c1.41.8 3.01 1.25 4.71 1.25h.01c5.48 0 9.91-4.43 9.91-9.91s-4.43-9.91-9.91-9.91zM18.1 16.39c-.21-.11-.76-.38-1.04-.51s-.33-.2-.46.2c-.13.4-.42.92-.51 1.1-.1.18-.18.2-.33.1s-.63-.23-1.2-.47c-1.12-.48-1.85-1.08-2.17-1.87-.16-.41.13-.62.28-.78.13-.13.28-.34.42-.51s.18-.28.28-.46c.1-.18.05-.33-.03-.46-.08-.13-.76-1.82-.9-2.2-.14-.38-.28-.33-.38-.33s-.23-.03-.36-.03c-.13 0-.33.05-.51.23-.18.18-.7.68-.7 1.65s.73 1.92.83 2.05c.1.13 1.4 2.13 3.38 2.98.48.2.85.33 1.14.43.48.18.9.15 1.25.1.38-.05 1.18-.48 1.34-1.04.16-.56.16-1.04.11-1.13s-.18-.16-.38-.28z"/>
-    </svg>
-);
-
 
 export default function ContentSyndicationPage() {
   const [selectedContract, setSelectedContract] = useState<Contract | null>(null);
