@@ -33,6 +33,7 @@ const contracts: Contract[] = [
   { id: 'sage', name: 'Sage' },
   { id: 'nike', name: 'Nike' },
   { id: 'adobe', name: 'Adobe Creative Cloud' },
+  { id: 'content-spark', name: 'Content Spark AI' },
 ];
 
 const contentData: Record<string, ContractContent> = {
@@ -56,6 +57,13 @@ const contentData: Record<string, ContractContent> = {
     imageUrl: "https://placehold.co/600x400.png",
     imageHint: "digital art",
     affiliateLink: "https://impact.com/promo/adobe-cc-all-apps",
+  },
+  'content-spark': {
+    title: "Generate Weeks of Content with AI",
+    description: "Creates weeks of content in a brand's unique voice – from social posts to emails to blogs – without hiring expensive agencies. When you share a tool that helps businesses grow, you earn meaningful commissions.\n\nOur affiliate program at a glance:\n\n- Initial reward\n- Recurring income\n- Growth potential\n- Sustainability: Average customer stays 12+ months",
+    imageUrl: "https://placehold.co/600x400.png",
+    imageHint: "ai writing",
+    affiliateLink: "https://impact.com/promo/content-spark-ai",
   },
 };
 
@@ -231,7 +239,7 @@ export default function ContentSyndicationPage() {
                                 className="object-cover w-full"
                             />
                         </div>
-                        <p className="text-muted-foreground text-sm leading-relaxed">{content.description}</p>
+                        <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-wrap">{content.description}</p>
                         
                         <div className="space-y-2">
                            <label className="text-sm font-medium">Affiliate Link</label>
