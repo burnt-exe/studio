@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -8,7 +7,9 @@ import { PageHeader } from "@/components/common/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, Rss, ThumbsUp, Mail, Link as LinkIcon, Copy, Loader2, Linkedin, X as XIcon, Reddit } from 'lucide-react';
+import { Send, Rss, ThumbsUp, Mail, Copy, Loader2, Linkedin, Reddit } from 'lucide-react';
+import { Link as LinkIcon } from 'lucide-react';
+import { X as XIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
