@@ -9,8 +9,6 @@ import { AppLayout } from "@/components/layout/app-layout";
 import { PageHeader } from "@/components/common/page-header";
 import { ResultDisplay } from "@/components/common/result-display";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -18,9 +16,33 @@ import { generateBrandedContent, GenerateBrandedContentInput, GenerateBrandedCon
 import { PenSquare, Rss, ThumbsUp, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+const brandVoiceOptions = [
+  "Professional & Authoritative",
+  "Friendly & Approachable",
+  "Witty & Humorous",
+  "Luxurious & Sophisticated",
+  "Bold & Edgy",
+  "Minimalist & Modern",
+  "Enthusiastic & Passionate",
+  "Informative & Educational",
+  "Nostalgic & Sentimental",
+];
+
+const topicOptions = [
+  "Announce a new product launch",
+  "Promote a seasonal sale",
+  "Share a behind-the-scenes look",
+  "Highlight a customer testimonial",
+  "Post an educational 'how-to' guide",
+  "Run a contest or giveaway",
+  "Ask a question to engage the audience",
+  "Share a company milestone or achievement",
+  "Feature an employee or team member",
+];
+
 const formSchema = z.object({
-  brandVoice: z.string().min(10, { message: "Brand voice description must be at least 10 characters." }),
-  topic: z.string().min(5, { message: "Topic must be at least 5 characters." }),
+  brandVoice: z.string().min(1, { message: "Please select a brand voice." }),
+  topic: z.string().min(1, { message: "Please select a topic." }),
   contentType: z.enum(['Social Media Post', 'Email Newsletter', 'Blog Post'], { required_error: "You need to select a content type." }),
 });
 
@@ -124,15 +146,20 @@ export default function CreateContentPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Brand Voice & Style</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="e.g., 'Friendly, approachable, and witty. We use emojis and keep it casual. We are experts in our field but don't use jargon.'"
-                        className="min-h-[100px] resize-y"
-                        {...field}
-                      />
-                    </FormControl>
+                     <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a brand voice..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                           {brandVoiceOptions.map((option) => (
+                            <SelectItem key={option} value={option}>{option}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     <FormDescription>
-                      Describe the tone, voice, and personality of your brand.
+                      Choose the tone, voice, and personality for your brand.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -145,9 +172,18 @@ export default function CreateContentPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Content Topic or Idea</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., 'The benefits of our new Q3 feature'" {...field} />
-                      </FormControl>
+                       <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a topic..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {topicOptions.map((option) => (
+                            <SelectItem key={option} value={option}>{option}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormDescription>
                         What should the content be about?
                       </FormDescription>
