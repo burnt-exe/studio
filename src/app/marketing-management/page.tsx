@@ -8,7 +8,7 @@ import { PageHeader } from "@/components/common/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, Rss, ThumbsUp, Mail, Link as LinkIcon, Copy, Loader2 } from 'lucide-react';
+import { Send, Rss, ThumbsUp, Mail, Link as LinkIcon, Copy, Loader2, Linkedin, X, Reddit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -80,6 +80,9 @@ export default function ContentSyndicationPage() {
   const [content, setContent] = useState<ContractContent | null>(null);
   const [isBloggerConnected, setIsBloggerConnected] = useState(false);
   const [isMetaConnected, setIsMetaConnected] = useState(false);
+  const [isLinkedInConnected, setIsLinkedInConnected] = useState(false);
+  const [isXConnected, setIsXConnected] = useState(false);
+  const [isRedditConnected, setIsRedditConnected] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { toast } = useToast();
 
@@ -91,8 +94,15 @@ export default function ContentSyndicationPage() {
         const parsed = JSON.parse(storedIntegrations);
         const blogger = parsed.find((i: any) => i.name === 'Blogger');
         const meta = parsed.find((i: any) => i.name === 'Meta');
+        const linkedin = parsed.find((i: any) => i.name === 'LinkedIn');
+        const x = parsed.find((i: any) => i.name === 'X');
+        const reddit = parsed.find((i: any) => i.name === 'Reddit');
+
         if (blogger?.connected) setIsBloggerConnected(true);
         if (meta?.connected) setIsMetaConnected(true);
+        if (linkedin?.connected) setIsLinkedInConnected(true);
+        if (x?.connected) setIsXConnected(true);
+        if (reddit?.connected) setIsRedditConnected(true);
       }
     } catch (e) {
       console.error("Failed to parse integrations from localStorage", e);
@@ -202,15 +212,30 @@ export default function ContentSyndicationPage() {
                     <CardContent className="grid grid-cols-2 gap-4">
                         <Button onClick={handleShareByEmail} variant="outline" className="w-full justify-start"><Mail className="mr-2 h-4 w-4"/> Email</Button>
                         <Button onClick={handleShareByWhatsApp} variant="outline" className="w-full justify-start"><WhatsAppIcon /> WhatsApp</Button>
-                        {isBloggerConnected ? (
-                             <Button onClick={() => handleShare('Blogger')} variant="outline" className="w-full justify-start"><Rss className="mr-2 h-4 w-4"/> Post to Blogger</Button>
-                        ) : (
-                            <Button asChild variant="outline" className="w-full justify-start" disabled><Rss className="mr-2 h-4 w-4"/> Post to Blogger</Button>
-                        )}
                         {isMetaConnected ? (
                              <Button onClick={() => handleShare('Meta')} variant="outline" className="w-full justify-start"><ThumbsUp className="mr-2 h-4 w-4"/> Post to Meta</Button>
                         ) : (
-                            <Button asChild variant="outline" className="w-full justify-start" disabled><ThumbsUp className="mr-2 h-4 w-4"/> Post to Meta</Button>
+                            <Button variant="outline" className="w-full justify-start" disabled><ThumbsUp className="mr-2 h-4 w-4"/> Post to Meta</Button>
+                        )}
+                        {isBloggerConnected ? (
+                             <Button onClick={() => handleShare('Blogger')} variant="outline" className="w-full justify-start"><Rss className="mr-2 h-4 w-4"/> Post to Blogger</Button>
+                        ) : (
+                            <Button variant="outline" className="w-full justify-start" disabled><Rss className="mr-2 h-4 w-4"/> Post to Blogger</Button>
+                        )}
+                        {isLinkedInConnected ? (
+                          <Button onClick={() => handleShare('LinkedIn')} variant="outline" className="w-full justify-start"><Linkedin className="mr-2 h-4 w-4"/> Post to LinkedIn</Button>
+                        ) : (
+                            <Button variant="outline" className="w-full justify-start" disabled><Linkedin className="mr-2 h-4 w-4"/> Post to LinkedIn</Button>
+                        )}
+                        {isXConnected ? (
+                              <Button onClick={() => handleShare('X')} variant="outline" className="w-full justify-start"><X className="mr-2 h-4 w-4"/> Post to X</Button>
+                        ) : (
+                            <Button variant="outline" className="w-full justify-start" disabled><X className="mr-2 h-4 w-4"/> Post to X</Button>
+                        )}
+                        {isRedditConnected ? (
+                              <Button onClick={() => handleShare('Reddit')} variant="outline" className="w-full justify-start"><Reddit className="mr-2 h-4 w-4"/> Post to Reddit</Button>
+                        ) : (
+                            <Button variant="outline" className="w-full justify-start" disabled><Reddit className="mr-2 h-4 w-4"/> Post to Reddit</Button>
                         )}
                     </CardContent>
                     <CardFooter>

@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Share2, Rss, ThumbsUp, CalendarDays, MessageSquare, MessageCircle, Link as LinkIcon, Unlink, Store, AppWindow } from 'lucide-react';
+import { Share2, Rss, ThumbsUp, CalendarDays, MessageSquare, Link as LinkIcon, Unlink, Store, AppWindow, Linkedin, X, Reddit } from 'lucide-react';
 
 interface Integration {
   name: string;
@@ -34,9 +34,37 @@ const initialIntegrations: Integration[] = [
     comingSoon: false,
   },
   {
+    name: 'LinkedIn',
+    description: 'Share professional updates and articles to your LinkedIn profile or company page.',
+    icon: Linkedin,
+    connected: false,
+    comingSoon: false,
+  },
+  {
+    name: 'X',
+    description: 'Post short updates, news, and links to your followers on X (formerly Twitter).',
+    icon: X,
+    connected: false,
+    comingSoon: false,
+  },
+  {
+    name: 'Reddit',
+    description: 'Monitor subreddits for brand mentions and post to relevant communities.',
+    icon: Reddit,
+    connected: false,
+    comingSoon: false,
+  },
+  {
     name: 'Shopify',
     description: 'Sync product catalogs and track sales conversions from your Shopify store.',
     icon: Store,
+    connected: false,
+    comingSoon: false,
+  },
+   {
+    name: 'Slack',
+    description: 'Receive real-time notifications for new conversions, payouts, and partner sign-ups.',
+    icon: MessageSquare,
     connected: false,
     comingSoon: false,
   },
@@ -51,20 +79,6 @@ const initialIntegrations: Integration[] = [
     name: 'Google Calendar',
     description: 'Schedule marketing campaigns and payout dates directly in your Google Calendar.',
     icon: CalendarDays,
-    connected: false,
-    comingSoon: true,
-  },
-  {
-    name: 'Slack',
-    description: 'Receive real-time notifications for new conversions, payouts, and partner sign-ups.',
-    icon: MessageSquare,
-    connected: false,
-    comingSoon: false,
-  },
-  {
-    name: 'Reddit',
-    description: 'Monitor subreddits for brand mentions and post to relevant communities.',
-    icon: MessageCircle,
     connected: false,
     comingSoon: true,
   },
