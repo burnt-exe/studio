@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { summarizeContract, AiContractSummaryInput, AiContractSummaryOutput } from '@/ai/flows/ai-contract-summary';
-import { FileText, UploadCloud } from 'lucide-react';
+import { FileText, UploadCloud } from '@/components/common/icons';
 import { useToast } from '@/hooks/use-toast';
 
 const MAX_FILE_SIZE_MB = 5;

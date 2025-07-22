@@ -3,7 +3,7 @@
 import { AppLayout } from "@/components/layout/app-layout";
 import { PageHeader } from "@/components/common/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings as SettingsIcon, Construction } from 'lucide-react';
+import { Settings as SettingsIcon, Construction } from '@/components/common/icons';
 
 export default function SettingsPage() {
   return (

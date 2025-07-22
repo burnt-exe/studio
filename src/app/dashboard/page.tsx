@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Megaphone, FileText, DollarSign, ArrowUpRight } from 'lucide-react';
+import { LayoutDashboard, Megaphone, FileText, DollarSign, ArrowUpRight } from '@/components/common/icons';
 import Link from "next/link";
 
 const overviewData = [

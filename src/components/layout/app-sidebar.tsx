@@ -29,7 +29,7 @@ import {
   Settings,
   ArrowRightLeft,
   PenSquare
-} from 'lucide-react';
+} from '@/components/common/icons';
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },

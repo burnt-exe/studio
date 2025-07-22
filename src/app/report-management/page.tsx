@@ -14,7 +14,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { generateReport, GenerateReportInput, GenerateReportOutput } from '@/ai/flows/report-generation';
-import { FilePieChart, Lightbulb } from 'lucide-react';
+import { FilePieChart, Lightbulb } from '@/components/common/icons';
 import { useToast } from '@/hooks/use-toast';
 
 const prebuiltPrompts = [

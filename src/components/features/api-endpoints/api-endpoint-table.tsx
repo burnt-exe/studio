@@ -5,7 +5,7 @@ import React, { useState, useMemo } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown } from '@/components/common/icons';
 import type { ApiEndpoint } from '@/lib/api-endpoints-data';
 
 interface ApiEndpointTableProps {

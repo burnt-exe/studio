@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Code2, Copy } from 'lucide-react';
+import { Code2, Copy } from '@/components/common/icons';
 import type { ApiEndpoint, ApiParameter } from '@/lib/api-endpoints-data';
 import { useToast } from '@/hooks/use-toast';
 

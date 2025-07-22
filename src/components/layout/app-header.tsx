@@ -4,7 +4,7 @@
 import React from 'react';
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Settings, CircleUserRound } from 'lucide-react';
+import { Settings, CircleUserRound } from '@/components/common/icons';
 import Link from 'next/link';
 
 export function AppHeader() {

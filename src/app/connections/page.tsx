@@ -3,7 +3,7 @@
 
 import { AppLayout } from "@/components/layout/app-layout";
 import { Button } from "@/components/ui/button";
-import { ArrowRightLeft } from 'lucide-react';
+import { ArrowRightLeft } from '@/components/common/icons';
 import Link from 'next/link';
 
 export default function ConnectionsPage() {

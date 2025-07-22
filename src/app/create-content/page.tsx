@@ -14,8 +14,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { generateBrandedContent, GenerateBrandedContentInput, GenerateBrandedContentOutput } from '@/ai/flows/content-generation';
-import { PenSquare, Rss, ThumbsUp, Mail, Linkedin, Reddit } from 'lucide-react';
-import { X as XIcon } from 'lucide-react';
+import { PenSquare, Rss, ThumbsUp, Mail, Linkedin, Reddit, XIcon } from '@/components/common/icons';
 import { useToast } from '@/hooks/use-toast';
 import { WhatsAppIcon } from '@/components/common/whatsapp-icon';
 

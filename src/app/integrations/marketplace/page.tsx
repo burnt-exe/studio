@@ -3,7 +3,7 @@
 import { AppLayout } from "@/components/layout/app-layout";
 import { PageHeader } from "@/components/common/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Store, Construction } from 'lucide-react';
+import { Store, Construction } from '@/components/common/icons';
 
 export default function MarketplaceIntegrationsPage() {
   return (

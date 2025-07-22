@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { askApiDocumentation, AskApiDocumentationInput, AskApiDocumentationOutput } from '@/ai/flows/api-documentation-qa';
-import { Bot, Copy } from 'lucide-react';
+import { Bot, Copy } from '@/components/common/icons';
 import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({

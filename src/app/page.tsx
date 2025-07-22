@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/common/page-header";
 import { ApiEndpointTable } from "@/components/features/api-endpoints/api-endpoint-table";
 import { CodeSnippetGenerator } from "@/components/features/api-endpoints/code-snippet-generator";
 import { apiEndpointsData, type ApiEndpoint } from '@/lib/api-endpoints-data';
-import { List } from 'lucide-react';
+import { List } from '@/components/common/icons';
 import { Card, CardContent } from '@/components/ui/card'; // Added Card for better structure
 
 export default function ApiEndpointsPage() {
