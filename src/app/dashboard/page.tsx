@@ -4,141 +4,108 @@
 import { AppLayout } from "@/components/layout/app-layout";
 import { PageHeader } from "@/components/common/page-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-import type { ChartConfig } from "@/components/ui/chart";
-import { LayoutDashboard, DollarSign, MousePointerClick, Percent } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { LayoutDashboard, Megaphone, FileText, DollarSign, ArrowUpRight } from 'lucide-react';
+import Link from "next/link";
 
-const revenueData = [
-  { month: "Jan", revenue: 4500 },
-  { month: "Feb", revenue: 4200 },
-  { month: "Mar", revenue: 5800 },
-  { month: "Apr", revenue: 5200 },
-  { month: "May", revenue: 6900 },
-  { month: "Jun", revenue: 7300 },
+const overviewData = [
+    { title: "Active Campaigns", value: "12", icon: Megaphone, change: "+2", changeType: "increase" },
+    { title: "Scheduled Posts", value: "48", icon: FileText, change: "-5", changeType: "decrease" },
+    { title: "Monthly Revenue", value: "$7,849", icon: DollarSign, change: "+15.2%", changeType: "increase" },
 ];
 
-const revenueChartConfig = {
-  revenue: {
-    label: "Revenue",
-    color: "hsl(var(--chart-1))",
-  },
-} satisfies ChartConfig;
-
-
-const partnerData = [
-  { name: "Partner A", conversions: 450 },
-  { name: "Partner B", conversions: 380 },
-  { name: "Partner C", conversions: 550 },
-  { name: "Partner D", conversions: 320 },
-  { name: "Partner E", conversions: 610 },
+const recentPosts = [
+    { id: 1, title: "Nike Air Max Dn: The Next Generation of Air", status: "Published", channel: "Blogger", date: "2024-05-20" },
+    { id: 2, title: "50% off Sage Accounting for 6 months!", status: "Scheduled", channel: "LinkedIn", date: "2024-05-22" },
+    { id: 3, title: "Unleash creativity with Adobe Creative Cloud", status: "Draft", channel: "Meta", date: "2024-05-25" },
+    { id: 4, title: "New Product Launch: Content Spark AI", status: "Published", channel: "X", date: "2024-05-18" },
+    { id: 5, title: "Behind the scenes at Impact Explorer", status: "Draft", channel: "Blogger", date: "2024-05-28" },
 ];
 
-const partnerChartConfig = {
-  conversions: {
-    label: "Conversions",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig;
-
+const getStatusBadge = (status: string) => {
+    switch (status.toLowerCase()) {
+        case 'published':
+            return <Badge variant="default">Published</Badge>;
+        case 'scheduled':
+            return <Badge variant="secondary">Scheduled</Badge>;
+        case 'draft':
+            return <Badge variant="outline">Draft</Badge>;
+        default:
+            return <Badge>{status}</Badge>;
+    }
+}
 
 export default function DashboardPage() {
   return (
     <AppLayout>
       <PageHeader 
-        title="Affiliate Dashboard" 
-        description="An overview of your affiliate marketing performance metrics."
+        title="Dashboard" 
+        description="Your command center for content and affiliate campaigns."
         icon={LayoutDashboard}
+        action={
+            <Link href="/create-content">
+              <Button>Create New Post</Button>
+            </Link>
+        }
       />
+
+      {/* Overview Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
-            <p className="text-xs text-muted-foreground">+20.1% from last month</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Clicks</CardTitle>
-            <MousePointerClick className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">12,345</div>
-            <p className="text-xs text-muted-foreground">+15.2% from last month</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
-            <Percent className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">3.25%</div>
-            <p className="text-xs text-muted-foreground">+0.5% from last month</p>
-          </CardContent>
-        </Card>
+        {overviewData.map((item, index) => (
+             <Card key={index} className="shadow-sm hover:shadow-md transition-shadow">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">{item.title}</CardTitle>
+                    <item.icon className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{item.value}</div>
+                    <p className={`text-xs ${item.changeType === 'increase' ? 'text-green-600' : 'text-red-600'}`}>
+                        {item.change} from last month
+                    </p>
+                </CardContent>
+            </Card>
+        ))}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-2">
-        <Card className="shadow-lg">
+      {/* Recent Posts Table */}
+      <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle>Revenue Over Time</CardTitle>
-            <CardDescription>Showing revenue for the last 6 months.</CardDescription>
+              <CardTitle>Recent & Upcoming Posts</CardTitle>
+              <CardDescription>A list of your most recent drafts, scheduled, and published content.</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={revenueChartConfig} className="h-[250px] w-full">
-              <LineChart accessibilityLayer data={revenueData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                <CartesianGrid vertical={false} />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
-                <YAxis tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => `$${value / 1000}k`} />
-                <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent indicator="line" />}
-                />
-                <Line
-                  dataKey="revenue"
-                  type="monotone"
-                  stroke="var(--color-revenue)"
-                  strokeWidth={2}
-                  dot={true}
-                />
-              </LineChart>
-            </ChartContainer>
+              <Table>
+                  <TableHeader>
+                      <TableRow>
+                          <TableHead>Title</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Channel</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                      {recentPosts.map((post) => (
+                          <TableRow key={post.id}>
+                              <TableCell className="font-medium">{post.title}</TableCell>
+                              <TableCell>{getStatusBadge(post.status)}</TableCell>
+                              <TableCell className="text-muted-foreground">{post.channel}</TableCell>
+                              <TableCell className="text-muted-foreground">{post.date}</TableCell>
+                              <TableCell className="text-right">
+                                  <Button variant="outline" size="sm">
+                                      View
+                                      <ArrowUpRight className="ml-2 h-4 w-4" />
+                                  </Button>
+                              </TableCell>
+                          </TableRow>
+                      ))}
+                  </TableBody>
+              </Table>
           </CardContent>
-        </Card>
+      </Card>
 
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle>Top Performing Partners</CardTitle>
-            <CardDescription>Conversions by media partner.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={partnerChartConfig} className="h-[250px] w-full">
-              <BarChart accessibilityLayer data={partnerData} layout="vertical" margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-                <CartesianGrid horizontal={false} />
-                <YAxis 
-                    dataKey="name" 
-                    type="category" 
-                    tickLine={false} 
-                    axisLine={false} 
-                    tickMargin={8} 
-                    width={80}
-                />
-                <XAxis dataKey="conversions" type="number" hide />
-                <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent indicator="dot" />}
-                />
-                <Bar dataKey="conversions" fill="var(--color-conversions)" radius={4} />
-              </BarChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      </div>
     </AppLayout>
   );
 }
