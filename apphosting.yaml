@@ -5,3 +5,6 @@ runConfig:
   # Increase this value if you'd like to automatically spin up
   # more instances in response to increased traffic.
   maxInstances: 1
+env:
+  - variable: FIREBASE_WEBAPP_CONFIG
+    value: '{"apiKey":"AIzaSyBH-COFmbiJIqPSjinG1qNQPiqrSTTOSi0","authDomain":"impact-explorer-ikq6g.firebaseapp.com","databaseURL":"https://impact-explorer-ikq6g-default-rtdb.firebaseio.com","projectId":"impact-explorer-ikq6g","storageBucket":"impact-explorer-ikq6g.firebasestorage.app","messagingSenderId":"754613269516","appId":"1:754613269516:web:00666908ddcf9e50b62a29","measurementId":"G-0PHVLQNGZQ"}'
