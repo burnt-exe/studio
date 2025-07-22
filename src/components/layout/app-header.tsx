@@ -1,10 +1,9 @@
-
 "use client";
 
 import React from 'react';
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Settings, UserCircle2 } from 'lucide-react';
+import { Settings, CircleUserRound } from 'lucide-react';
 import Link from 'next/link';
 
 export function AppHeader() {
@@ -25,7 +24,7 @@ export function AppHeader() {
           <Settings className="h-5 w-5" />
         </Button>
         <Button variant="ghost" size="icon" aria-label="User Profile">
-          <UserCircle2 className="h-5 w-5" />
+          <CircleUserRound className="h-5 w-5" />
         </Button>
       </div>
     </header>
