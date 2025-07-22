@@ -61,8 +61,8 @@ export const apiEndpointsData: ApiEndpoint[] = [
     method: 'GET',
     path: '/Payouts',
     parameters: [
-      { name: 'StartDate', type: 'string', required: true, description: 'The start date for the payout period.', placeholder: 'YYYY-MM-DD' },
-      { name: 'EndDate', type: 'string', required: true, description: 'The end date for the payout period.', placeholder: 'YYYY-MM-DD' },
+      { name: 'StartDate', type: 'string', required: true, description: 'The start date and time for the payout period.', placeholder: 'YYYY-MM-DDTHH:MM:SSZ' },
+      { name: 'EndDate', type: 'string', required: true, description: 'The end date and time for the payout period.', placeholder: 'YYYY-MM-DDTHH:MM:SSZ' },
     ],
   },
 ];
