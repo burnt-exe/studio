@@ -14,6 +14,7 @@ const GenerateBrandedContentInputSchema = z.object({
   brandVoice: z.string().describe('A description of the brand voice, tone, and style.'),
   topic: z.string().describe('The topic or theme for the content.'),
   contentType: z.enum(['Social Media Post', 'Email Newsletter', 'Blog Post']).describe('The type of content to generate.'),
+  campaignDetails: z.string().optional().describe('Details about an affiliate campaign to include, such as product name, description, and the affiliate link.'),
 });
 export type GenerateBrandedContentInput = z.infer<typeof GenerateBrandedContentInputSchema>;
 
@@ -39,6 +40,15 @@ Brand Voice Description:
 ---
 
 Content Topic: "{{{topic}}}"
+
+{{#if campaignDetails}}
+Affiliate Campaign Details:
+---
+{{{campaignDetails}}}
+---
+When relevant, you MUST naturally weave the affiliate campaign details and its link into the generated content. Make it compelling and encourage the user to click.
+{{/if}}
+
 
 Based on the above, generate a compelling "{{contentType}}". Create a suitable title and body text. If it is a social media post, include relevant hashtags.
 `,

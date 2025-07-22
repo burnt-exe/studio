@@ -22,7 +22,7 @@ interface Contract {
   name: string;
 }
 
-interface ContractContent {
+export interface ContractContent {
   title: string;
   description: string;
   imageUrl: string;
@@ -37,7 +37,7 @@ const contracts: Contract[] = [
   { id: 'content-spark', name: 'Content Spark AI' },
 ];
 
-const contentData: Record<string, ContractContent> = {
+export const contentData: Record<string, ContractContent> = {
   sage: {
     title: "Streamline Your Business with Sage Accounting",
     description: "Get 50% off your first 6 months of Sage Accounting. Effortlessly manage invoices, track expenses, and handle taxes with the #1 cloud accounting software for small businesses.",
@@ -286,5 +286,3 @@ export default function ContentSyndicationPage() {
     </AppLayout>
   );
 }
-
-    

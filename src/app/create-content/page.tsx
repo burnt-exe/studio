@@ -17,6 +17,7 @@ import { generateBrandedContent, GenerateBrandedContentInput, GenerateBrandedCon
 import { PenSquare, Rss, ThumbsUp, Mail, Linkedin, Reddit, XIcon } from '@/components/common/icons';
 import { useToast } from '@/hooks/use-toast';
 import { WhatsAppIcon } from '@/components/common/whatsapp-icon';
+import { contentData } from '@/app/marketing-management/page';
 
 const brandVoiceOptions = [
   "Professional & Authoritative",
@@ -42,10 +43,19 @@ const topicOptions = [
   "Feature an employee or team member",
 ];
 
+const affiliateContractOptions = [
+  { id: 'none', name: 'None' },
+  { id: 'sage', name: 'Sage' },
+  { id: 'nike', name: 'Nike' },
+  { id: 'adobe', name: 'Adobe Creative Cloud' },
+  { id: 'content-spark', name: 'Content Spark AI' },
+];
+
 const formSchema = z.object({
   brandVoice: z.string().min(1, { message: "Please select a brand voice." }),
   topic: z.string().min(1, { message: "Please select a topic." }),
   contentType: z.enum(['Social Media Post', 'Email Newsletter', 'Blog Post'], { required_error: "You need to select a content type." }),
+  affiliateContract: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -68,6 +78,7 @@ export default function CreateContentPage() {
     defaultValues: {
       brandVoice: "",
       topic: "",
+      affiliateContract: "none",
     },
   });
 
@@ -97,8 +108,23 @@ export default function CreateContentPage() {
     setIsLoading(true);
     setError(null);
     setResult(null);
+
+    let campaignDetails: string | undefined;
+    if (data.affiliateContract && data.affiliateContract !== 'none') {
+      const campaign = contentData[data.affiliateContract];
+      if (campaign) {
+        campaignDetails = `Product/Service Name: ${affiliateContractOptions.find(c => c.id === data.affiliateContract)?.name}\nDescription: ${campaign.description}\nAffiliate Link: ${campaign.affiliateLink}`;
+      }
+    }
+
     try {
-      const response = await generateBrandedContent(data);
+      const input: GenerateBrandedContentInput = {
+        brandVoice: data.brandVoice,
+        topic: data.topic,
+        contentType: data.contentType,
+        campaignDetails: campaignDetails,
+      };
+      const response = await generateBrandedContent(input);
       setResult(response);
       toast({ title: "Content Generated!", description: `Your ${data.contentType} has been successfully generated.` });
     } catch (e: any) {
@@ -145,32 +171,32 @@ export default function CreateContentPage() {
               <CardDescription>Define your brand, topic, and content type, and let AI do the writing.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <FormField
-                control={form.control}
-                name="brandVoice"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Brand Voice & Style</FormLabel>
-                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a brand voice..." />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                           {brandVoiceOptions.map((option) => (
-                            <SelectItem key={option} value={option}>{option}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    <FormDescription>
-                      Choose the tone, voice, and personality for your brand.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <div className="grid md:grid-cols-2 gap-6">
+                 <FormField
+                  control={form.control}
+                  name="brandVoice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Brand Voice & Style</FormLabel>
+                       <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a brand voice..." />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                             {brandVoiceOptions.map((option) => (
+                              <SelectItem key={option} value={option}>{option}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      <FormDescription>
+                        Choose the tone, voice, and personality for your brand.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                  <FormField
                   control={form.control}
                   name="topic"
@@ -196,6 +222,9 @@ export default function CreateContentPage() {
                     </FormItem>
                   )}
                 />
+              </div>
+
+               <div className="grid md:grid-cols-2 gap-6">
                  <FormField
                   control={form.control}
                   name="contentType"
@@ -216,6 +245,31 @@ export default function CreateContentPage() {
                       </Select>
                       <FormDescription>
                         What format should the content be in?
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="affiliateContract"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Affiliate Campaign (Optional)</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Include a campaign..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {affiliateContractOptions.map((option) => (
+                            <SelectItem key={option.id} value={option.id}>{option.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Include affiliate links and product info in the content.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -290,5 +344,3 @@ export default function CreateContentPage() {
     </AppLayout>
   );
 }
-
-    
