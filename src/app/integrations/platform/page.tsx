@@ -14,7 +14,7 @@ import { Share2, Rss, ThumbsUp, CalendarDays, MessageSquare, Unlink, Store, AppW
 interface Integration {
   name: string;
   description: string;
-  icon: LucideIcon;
+  icon: ((props: React.SVGProps<SVGSVGElement>) => JSX.Element) | LucideIcon;
   connected: boolean;
   comingSoon: boolean;
 }
@@ -197,3 +197,5 @@ export default function PlatformIntegrationsPage() {
     </AppLayout>
   );
 }
+
+    
