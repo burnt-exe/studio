@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -20,9 +21,11 @@ export function AppHeader() {
         </Link>
       </div>
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" aria-label="Settings">
-          <Settings className="h-5 w-5" />
-        </Button>
+        <Link href="/settings" passHref>
+          <Button variant="ghost" size="icon" aria-label="Settings">
+            <Settings className="h-5 w-5" />
+          </Button>
+        </Link>
         <Button variant="ghost" size="icon" aria-label="User Profile">
           <CircleUserRound className="h-5 w-5" />
         </Button>
